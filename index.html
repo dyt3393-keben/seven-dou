@@ -2,657 +2,402 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>萌芽学习岛 - 高思导引小课堂</title>
-
-    <!-- PWA / iOS Web App Meta Tags -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="萌芽学习岛">
-    <meta name="theme-color" content="#FFD166">
-
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Fonts: Inter, Fredoka & Noto Sans SC for Kid-Friendly UI -->
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Noto+Sans+SC:wght@500;700;900&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            yellow: '#FFD166',
-                            orange: '#FF9F1C',
-                            blue: '#4EA8DE',
-                            purple: '#A2D2FF',
-                            pink: '#FF85A1',
-                            green: '#06D6A0',
-                            bg: '#F4F8FC'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['"Noto Sans SC"', 'Fredoka', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小星星学习与错题乐园 - iPad专属版</title>
+    <!-- 引入 Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- 引入 Lucide 图标 -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=ZCOOL+KuaiLe&display=swap');
+        
         body {
-            background-color: #F4F8FC;
-            background-image: radial-gradient(#E2EDF9 2px, transparent 2px);
-            background-size: 24px 24px;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
+            font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f0fdf4;
+            color: #1f2937;
             touch-action: manipulation;
         }
-
-        /* iPad and Touch Friendly Press Animations */
-        .btn-touch {
-            transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.12s ease;
+        
+        .font-fun {
+            font-family: 'ZCOOL KuaiLe', cursive, sans-serif;
         }
+
         .btn-touch:active {
-            transform: scale(0.94) translateY(2px);
+            transform: scale(0.95);
         }
-
-        /* Custom Touch Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+        
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
         }
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.03);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #CBD5E1;
-            border-radius: 10px;
-        }
-
-        @keyframes star-pulse {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.18) rotate(12deg); }
-        }
-        .animate-star {
-            animation: star-pulse 2.2s infinite ease-in-out;
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
-<body class="text-slate-800 antialiased h-screen overflow-hidden flex flex-col justify-between">
+<body class="min-h-screen flex flex-col select-none">
 
-    <!-- Top Navigation Bar -->
-    <header class="bg-white/95 backdrop-blur-md border-b-4 border-amber-300 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between shrink-0 shadow-sm z-10">
-        <!-- Brand Title & Tag -->
+    <!-- 顶部导航栏 -->
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-emerald-100 px-4 py-3 flex items-center justify-between shadow-xs">
         <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-tr from-amber-400 to-yellow-300 rounded-2xl flex items-center justify-center shadow-md text-white text-xl md:text-2xl font-bold border-2 border-yellow-200">
-                <i class="fa-solid fa-rocket animate-star"></i>
+            <div class="w-10 h-10 bg-emerald-500 rounded-2xl flex items-center justify-center text-white shadow-md shadow-emerald-200">
+                <i data-lucide="star" class="w-6 h-6 fill-current"></i>
             </div>
             <div>
-                <h1 class="text-lg md:text-2xl font-black text-slate-800 tracking-wide flex items-center gap-2">
-                    高思导引晨熬2025
-                    <span class="bg-amber-100 text-amber-800 text-xs px-2.5 py-0.5 rounded-full border border-amber-300 font-bold hidden sm:inline-block">三年级数学</span>
-                </h1>
-                <p class="text-xs text-slate-500 font-medium">看视频 • 打卡标记 • 收集好学小星星 ⭐</p>
+                <h1 class="font-fun text-xl text-emerald-800 tracking-wide">小星星学习与错题乐园 🌟</h1>
+                <p class="text-xs text-gray-500">看课打卡 + 语数英错题本</p>
             </div>
         </div>
 
-        <!-- Right Tools & Progress Widget -->
-        <div class="flex items-center space-x-3 md:space-x-4">
-            <!-- Overall Medal Badge Count -->
-            <div class="flex items-center bg-amber-50 border-2 border-amber-200 rounded-2xl px-3 md:px-4 py-1.5 shadow-inner">
-                <i class="fa-solid fa-star text-amber-400 text-xl md:text-2xl mr-2 animate-star"></i>
-                <div class="text-left">
-                    <div class="text-[10px] md:text-xs text-amber-700 font-bold">已收好学星</div>
-                    <div class="text-xs md:text-sm font-black text-amber-900" id="total-progress-text">0 / 0 (0%)</div>
-                </div>
+        <div class="flex items-center space-x-2">
+            <!-- 切换视图按钮 -->
+            <div class="bg-emerald-50 p-1 rounded-2xl flex space-x-1 border border-emerald-200">
+                <button onclick="switchTab('study')" id="tab-btn-study" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-emerald-500 text-white shadow-xs">📚 课程打卡</button>
+                <button onclick="switchTab('wrong')" id="tab-btn-wrong" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-emerald-700 hover:bg-emerald-100">📝 错题跟进</button>
             </div>
 
-            <!-- PWA Installation Info Modal Toggle -->
-            <button id="open-pwa-guide-btn" class="btn-touch bg-sky-50 hover:bg-sky-100 text-sky-600 w-10 h-10 md:w-11 md:h-11 rounded-2xl flex items-center justify-center font-bold border-2 border-sky-200 shadow-sm" title="添加到 iPad 主屏幕教程">
-                <i class="fa-solid fa-tablet-screen-button text-base md:text-lg"></i>
-            </button>
-
-            <!-- Settings / Parent Configuration Button -->
-            <button id="open-settings-btn" class="btn-touch bg-slate-100 hover:bg-slate-200 text-slate-600 w-10 h-10 md:w-11 md:h-11 rounded-2xl flex items-center justify-center font-bold border-2 border-slate-300 shadow-sm" title="家长设置与链接配置">
-                <i class="fa-solid fa-gear text-base md:text-lg"></i>
+            <!-- 家长后台设置按钮 -->
+            <button onclick="toggleSettings()" class="btn-touch w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-600 transition-colors">
+                <i data-lucide="settings" class="w-5 h-5"></i>
             </button>
         </div>
     </header>
 
-    <!-- Main iPad Split View Interface -->
-    <main class="flex-1 flex overflow-hidden p-3 md:p-5 gap-4 md:gap-6">
-        
-        <!-- Left Sidebar: Chapter List Selectors -->
-        <aside class="w-64 md:w-80 bg-white rounded-3xl border-4 border-slate-100 shadow-xl flex flex-col shrink-0 overflow-hidden">
-            <div class="p-3.5 md:p-4 bg-sky-50 border-b-2 border-sky-100 flex items-center justify-between">
-                <span class="font-black text-sky-900 text-sm md:text-base flex items-center gap-2">
-                    <i class="fa-solid fa-book-open text-sky-500"></i> 课程章节目录
-                </span>
-                <span class="text-xs bg-sky-200 text-sky-800 font-bold px-2 py-0.5 rounded-full" id="chapter-count-badge">3 讲</span>
+    <!-- 课程打卡视图 -->
+    <main id="view-study" class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div class="md:col-span-4 space-y-4">
+            <div class="bg-white rounded-3xl p-5 shadow-sm border border-emerald-100">
+                <h2 class="font-fun text-lg text-gray-700 mb-3 flex items-center">
+                    <i data-lucide="book-open" class="w-5 h-5 mr-2 text-emerald-500"></i>
+                    课程目录
+                </h2>
+                <div id="course-chapters-list" class="space-y-2"></div>
             </div>
-            
-            <!-- Chapter Cards Container -->
-            <div id="chapter-list" class="flex-1 overflow-y-auto p-3 space-y-3">
-                <!-- Dynamically populated via JS -->
-            </div>
-
-            <!-- Encouragement Card -->
-            <div class="p-3.5 bg-gradient-to-r from-amber-400 to-orange-400 text-white rounded-2xl m-3 shadow-md text-center">
-                <i class="fa-solid fa-crown text-2xl text-yellow-200 mb-1"></i>
-                <div class="text-[11px] font-bold opacity-90">每天坚持打卡</div>
-                <div class="text-xs md:text-sm font-black">天天进步一点点！</div>
-            </div>
-        </aside>
-
-        <!-- Right Main Panel: Video Lessons Card Grid -->
-        <section class="flex-1 bg-white rounded-3xl border-4 border-slate-100 shadow-xl flex flex-col overflow-hidden">
-            
-            <!-- Current Chapter Banner -->
-            <div class="p-4 md:p-5 bg-gradient-to-r from-blue-500 via-sky-400 to-teal-400 text-white flex flex-col sm:flex-row justify-between sm:items-center gap-3 shadow-md shrink-0">
-                <div>
-                    <h2 id="current-chapter-title" class="text-xl md:text-2xl font-black tracking-tight flex items-center gap-2">
-                        加载课程中...
-                    </h2>
-                    <p class="text-sky-100 text-xs font-medium mt-1">
-                        点击星星打卡学习，点击右侧“去观看”直接在新窗口中播放视频
-                    </p>
-                </div>
-
-                <!-- Chapter Specific Progress Card -->
-                <div class="bg-white/20 backdrop-blur-md rounded-2xl p-2.5 md:p-3 border border-white/30 text-center min-w-[140px] shrink-0">
-                    <div class="text-[11px] font-bold text-sky-100">本讲学习进度</div>
-                    <div id="chapter-progress-text" class="text-base md:text-lg font-black text-white">0/0</div>
-                    <div class="w-full bg-black/20 rounded-full h-2 mt-1 overflow-hidden">
-                        <div id="chapter-progress-bar" class="bg-yellow-300 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+        <div class="md:col-span-8 flex flex-col space-y-4">
+            <div class="bg-white rounded-3xl p-5 md:p-6 shadow-sm border border-emerald-100 flex-1 flex flex-col">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-gray-100 mb-4 gap-2">
+                    <div>
+                        <span id="current-chapter-badge" class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">第 1 部分</span>
+                        <h2 id="current-chapter-title" class="font-fun text-2xl text-gray-800 mt-1">课程标题</h2>
                     </div>
+                    <div class="text-xs text-gray-400">点击星星打卡，全部学完有大奖杯哦！🏆</div>
                 </div>
+                <div id="video-list-container" class="space-y-3 flex-1 overflow-y-auto no-scrollbar"></div>
             </div>
-
-            <!-- Video Lessons Card Grid -->
-            <div class="flex-1 overflow-y-auto p-3 md:p-5">
-                <div id="lessons-container" class="grid grid-cols-1 lg:grid-cols-2 gap-3.5 md:gap-4">
-                    <!-- Dynamically populated via JS -->
-                </div>
-            </div>
-        </section>
-
+        </div>
     </main>
 
-    <!-- Parent Configuration Modal (⚙️ 网址配置 / 设置) -->
-    <div id="settings-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 md:p-6 z-50 hidden">
-        <div class="bg-white rounded-3xl max-w-3xl w-full border-4 border-slate-200 shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
-            <!-- Modal Header -->
-            <div class="p-4 bg-slate-100 border-b border-slate-200 flex justify-between items-center">
-                <h3 class="text-lg md:text-xl font-black text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-sliders text-amber-500"></i> 家长后台：夸克网盘链接与数据配置
+    <!-- 错题跟进系统视图 -->
+    <main id="view-wrong" class="flex-1 max-w-5xl w-full mx-auto p-4 md:p-6 hidden flex flex-col space-y-6">
+        <div class="flex flex-col sm:flex-row items-center justify-between bg-white p-4 rounded-3xl shadow-sm border border-emerald-100 gap-4">
+            <div class="flex space-x-2 w-full sm:w-auto">
+                <button onclick="filterSubject('all')" id="sub-all" class="flex-1 sm:flex-none px-4 py-2 rounded-2xl text-xs font-bold bg-emerald-500 text-white shadow-xs">全部科目</button>
+                <button onclick="filterSubject('chinese')" id="sub-chinese" class="flex-1 sm:flex-none px-4 py-2 rounded-2xl text-xs font-bold bg-gray-100 text-gray-600 hover:bg-gray-200">📖 语文</button>
+                <button onclick="filterSubject('math')" id="sub-math" class="flex-1 sm:flex-none px-4 py-2 rounded-2xl text-xs font-bold bg-gray-100 text-gray-600 hover:bg-gray-200">🔢 数学</button>
+                <button onclick="filterSubject('english')" id="sub-english" class="flex-1 sm:flex-none px-4 py-2 rounded-2xl text-xs font-bold bg-gray-100 text-gray-600 hover:bg-gray-200">🔤 英语</button>
+            </div>
+            <button onclick="openAddWrongModal()" class="w-full sm:w-auto px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-fun text-sm rounded-2xl shadow-md shadow-amber-200 flex items-center justify-center space-x-2 btn-touch">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                <span>+ 记录新错题</span>
+            </button>
+        </div>
+
+        <div id="wrong-questions-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1"></div>
+    </main>
+
+    <!-- 新增错题弹窗 -->
+    <div id="add-wrong-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full flex flex-col shadow-2xl overflow-hidden">
+            <div class="p-5 border-b border-gray-100 flex items-center justify-between bg-amber-50">
+                <h3 class="font-fun text-xl text-amber-900 flex items-center">
+                    <i data-lucide="file-warning" class="w-5 h-5 mr-2 text-amber-600"></i>
+                    添加新错题
                 </h3>
-                <button id="close-settings-btn" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 flex items-center justify-center font-bold btn-touch">
-                    <i class="fa-solid fa-xmark"></i>
+                <button onclick="closeAddWrongModal()" class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-500 hover:bg-gray-100">
+                    <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            
-            <!-- Modal Body -->
-            <div class="p-4 md:p-6 overflow-y-auto space-y-5">
-                <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-3.5 text-xs text-amber-800 leading-relaxed">
-                    <i class="fa-solid fa-circle-info text-amber-600 mr-1"></i>
-                    <strong>链接说明：</strong> 你可以设置一个<strong>全局根链接</strong>（比如夸克网盘总分享文件夹），也可以为<strong>每一节具体的 mp4 视频</strong>填入单独的视频分享直链。点击“去观看”时优先使用单节链接。
-                </div>
-
-                <!-- Global Root URL -->
+            <div class="p-6 space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">夸克网盘根目录 / 总分享链接 (Default Fallback URL)</label>
-                    <input type="text" id="global-netdisk-url" class="w-full border-2 border-slate-200 rounded-xl px-3.5 py-2 text-xs md:text-sm focus:border-sky-500 focus:outline-none font-medium" placeholder="https://pan.quark.cn/s/...">
+                    <label class="block text-xs font-bold text-gray-600 mb-1">选择科目</label>
+                    <select id="wrong-subject-input" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:border-amber-500">
+                        <option value="chinese">📖 语文</option>
+                        <option value="math">🔢 数学</option>
+                        <option value="english">🔤 英语</option>
+                    </select>
                 </div>
-
-                <!-- Quick Batch Links Paste -->
-                <div class="border-t border-slate-200 pt-4">
-                    <label class="block text-xs font-bold text-slate-700 mb-1">⚡ 一键批量粘贴所有视频链接（按行分隔）</label>
-                    <textarea id="batch-links-input" rows="3" class="w-full border-2 border-slate-200 rounded-xl p-3 text-xs focus:border-sky-500 focus:outline-none font-mono" placeholder="请按顺序粘贴每节课的夸克链接，一行一条链接..."></textarea>
-                    <button id="apply-batch-links-btn" class="mt-2 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs px-4 py-2 rounded-xl btn-touch">
-                        按顺序批量填入下方
-                    </button>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">错题内容/知识点描述（如错别字、应用题等）</label>
+                    <textarea id="wrong-desc-input" rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-2xl p-3 text-sm text-gray-700 focus:outline-none focus:border-amber-500" placeholder="例如：错别字：把‘辨别’的‘辨’写成了‘辩’论的‘辩’..."></textarea>
                 </div>
-
-                <!-- Granular Per-Lesson URL Inputs -->
-                <div class="border-t border-slate-200 pt-4">
-                    <h4 class="text-xs font-black text-slate-700 mb-3 flex items-center gap-1.5">
-                        <i class="fa-solid fa-link text-sky-500"></i> 各章节具体视频链接配置：
-                    </h4>
-                    
-                    <div id="settings-lessons-list" class="space-y-4">
-                        <!-- Dynamically populated lesson inputs -->
-                    </div>
-                </div>
-
-                <!-- Danger Zone / Reset -->
-                <div class="border-t border-slate-200 pt-4 flex justify-between items-center bg-rose-50 p-3 rounded-2xl border border-rose-100">
-                    <div>
-                        <span class="text-xs font-bold text-rose-800">重置所有学习打卡状态</span>
-                        <p class="text-[11px] text-rose-600">重置后所有打卡勾选清空，可重新学习。</p>
-                    </div>
-                    <button id="reset-progress-btn" class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl border border-rose-300 btn-touch shrink-0">
-                        清空进度
-                    </button>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">错题照片或截图（选填：图片网址）</label>
+                    <input type="text" id="wrong-img-input" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:border-amber-500" placeholder="可输入图片链接，无图则留空">
                 </div>
             </div>
-
-            <!-- Modal Footer -->
-            <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-3">
-                <button id="save-settings-btn" class="bg-sky-500 hover:bg-sky-600 text-white font-bold px-6 py-2.5 rounded-xl border-b-4 border-sky-700 btn-bounce text-sm">
-                    <i class="fa-solid fa-floppy-disk mr-1"></i> 保存并生效
-                </button>
+            <div class="p-4 border-t border-gray-100 bg-gray-50 flex justify-end space-x-3">
+                <button onclick="closeAddWrongModal()" class="px-5 py-2.5 rounded-2xl text-sm font-bold text-gray-600 hover:bg-gray-200 transition-colors">取消</button>
+                <button onclick="saveNewWrongQuestion()" class="px-6 py-2.5 rounded-2xl text-sm font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-200 transition-colors">保存错题</button>
             </div>
         </div>
     </div>
 
-    <!-- Celebration Modal (🏆 打卡完成夸奖) -->
-    <div id="celebration-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
-        <div class="bg-white rounded-3xl max-w-sm w-full border-4 border-yellow-300 shadow-2xl text-center p-6">
-            <div class="w-20 h-20 bg-gradient-to-tr from-amber-400 to-yellow-300 rounded-full mx-auto flex items-center justify-center text-4xl text-white shadow-lg border-4 border-white animate-bounce">
-                🏆
-            </div>
-            <h3 class="text-2xl font-black text-slate-800 mt-4">太棒了！全学完啦！</h3>
-            <p class="text-xs md:text-sm text-slate-500 font-medium mt-1 leading-relaxed">恭喜你完成了本讲的所有视频课程！给你奖励大号好学奖杯！</p>
-            <button id="close-celebration-btn" class="mt-6 w-full bg-amber-400 hover:bg-amber-500 text-amber-950 font-black py-3 rounded-2xl border-b-4 border-amber-600 btn-touch text-base shadow-md">
-                继续加油 ⭐
-            </button>
-        </div>
-    </div>
-
-    <!-- PWA Home Screen Guide Modal -->
-    <div id="pwa-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
-        <div class="bg-white rounded-3xl max-w-md w-full border-4 border-sky-200 shadow-2xl p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-black text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-tablet-screen-button text-sky-500"></i> 添加到 iPad 主屏幕
+    <!-- 家长后台设置弹窗 -->
+    <div id="settings-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="p-5 border-b border-gray-100 flex items-center justify-between bg-emerald-50">
+                <h3 class="font-fun text-xl text-emerald-900 flex items-center">
+                    <i data-lucide="settings" class="w-5 h-5 mr-2 text-emerald-600"></i>
+                    家长设置：网盘链接管理
                 </h3>
-                <button id="close-pwa-btn" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center font-bold">
-                    <i class="fa-solid fa-xmark"></i>
+                <button onclick="toggleSettings()" class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-500 hover:bg-gray-100">
+                    <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            <p class="text-xs text-slate-600 mb-4 leading-relaxed">按照以下 3 步，即可在 iPad 桌面上生成类似 App 的图标，全屏使用：</p>
-            <ol class="space-y-3 text-xs text-slate-700">
-                <li class="flex items-center gap-3 bg-sky-50 p-2.5 rounded-xl border border-sky-100">
-                    <span class="w-6 h-6 rounded-full bg-sky-500 text-white font-bold flex items-center justify-center shrink-0">1</span>
-                    <span>用 iPad **Safari 浏览器** 打开本网页。</span>
-                </li>
-                <li class="flex items-center gap-3 bg-sky-50 p-2.5 rounded-xl border border-sky-100">
-                    <span class="w-6 h-6 rounded-full bg-sky-500 text-white font-bold flex items-center justify-center shrink-0">2</span>
-                    <span>点击 Safari 页面右上角或底部的 **“分享”** 按钮 (<i class="fa-solid fa-share-from-square text-sky-600"></i>)。</span>
-                </li>
-                <li class="flex items-center gap-3 bg-sky-50 p-2.5 rounded-xl border border-sky-100">
-                    <span class="w-6 h-6 rounded-full bg-sky-500 text-white font-bold flex items-center justify-center shrink-0">3</span>
-                    <span>往下滑动选择 **“添加到主屏幕”** 即可！</span>
-                </li>
-            </ol>
-            <button id="confirm-pwa-btn" class="mt-5 w-full bg-sky-500 hover:bg-sky-600 text-white font-black py-2.5 rounded-xl btn-touch text-xs">
-                我明白啦
-            </button>
+            <div class="p-6 overflow-y-auto space-y-4 flex-1" id="settings-links-container"></div>
+            <div class="p-4 border-t border-gray-100 bg-gray-50 flex justify-end space-x-3">
+                <button onclick="toggleSettings()" class="px-5 py-2.5 rounded-2xl text-sm font-bold text-gray-600 hover:bg-gray-200 transition-colors">取消</button>
+                <button onclick="saveSettings()" class="px-6 py-2.5 rounded-2xl text-sm font-bold bg-emerald-500 hover:bg-emerald-600 text-white shadow-md shadow-emerald-200 transition-colors">保存修改</button>
+            </div>
         </div>
     </div>
 
-    <!-- Application Script Logic -->
+    <!-- JavaScript 逻辑 -->
     <script>
-        // Exact Default Course Structure from User's Quark Cloud Screenshot
-        const defaultCourseData = {
-            globalUrl: "https://pan.quark.cn",
-            chapters: [
-                {
-                    id: "ch301",
-                    title: "第301讲.四则运算一",
-                    icon: "fa-calculator",
-                    color: "from-blue-500 to-indigo-500",
-                    lessons: [
-                        { id: "301-2", name: "2.添去括号凑整.mp4", size: "61.7M", url: "" },
-                        { id: "301-3", name: "3.拆分凑整.mp4", size: "65M", url: "" },
-                        { id: "301-4", name: "4.数位交换凑整.mp4", size: "78.2M", url: "" },
-                        { id: "301-5", name: "5.分组法.mp4", size: "23M", url: "" },
-                        { id: "301-6", name: "6.综合.mp4", size: "60.6M", url: "" }
-                    ]
-                },
-                {
-                    id: "ch302",
-                    title: "第302讲.基本应用题",
-                    icon: "fa-shapes",
-                    color: "from-purple-500 to-pink-500",
-                    lessons: [
-                        { id: "302-1", name: "1.倍数数量关系.mp4", size: "31.9M", url: "" },
-                        { id: "302-2", name: "2.归一问题.mp4", size: "63.6M", url: "" },
-                        { id: "302-3", name: "3.等量代换.mp4", size: "48M", url: "" },
-                        { id: "302-4", name: "4.综合.mp4", size: "106.1M", url: "" }
-                    ]
-                },
-                {
-                    id: "ch303",
-                    title: "第303讲.枚举法一",
-                    icon: "fa-list-check",
-                    color: "from-emerald-500 to-teal-500",
-                    lessons: [
-                        { id: "303-1", name: "1.基础计数.mp4", size: "48.3M", url: "" },
-                        { id: "303-2", name: "2.数图形.mp4", size: "16.2M", url: "" },
-                        { id: "303-3", name: "3.分人.mp4", size: "94.9M", url: "" }
-                    ]
-                }
-            ]
-        };
-
-        // Storage Keys
-        const STORAGE_KEY_PROGRESS = "kids_learning_progress_v2";
-        const STORAGE_KEY_CONFIG = "kids_learning_config_v2";
-
-        // Application State
-        let courseData = JSON.parse(localStorage.getItem(STORAGE_KEY_CONFIG)) || defaultCourseData;
-        let completedLessons = JSON.parse(localStorage.getItem(STORAGE_KEY_PROGRESS)) || {};
-        let activeChapterId = courseData.chapters[0].id;
-
-        // Reward Sound Effects
-        function playChimeSound() {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const now = ctx.currentTime;
-                [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(freq, now + idx * 0.08);
-                    gain.gain.setValueAtTime(0.2, now + idx * 0.08);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.3);
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    osc.start(now + idx * 0.08);
-                    osc.stop(now + idx * 0.08 + 0.3);
-                });
-            } catch (e) {
-                console.log("Audio play unavailable.");
+        const defaultChapters = [
+            {
+                id: 1,
+                title: "第301讲·四则运算一",
+                badge: "第 1 部分",
+                videos: [
+                    { id: "v1_1", name: "第301讲.四则运算一-[1.基础计算].mp4", size: "48.3M", url: "https://pan.quark.cn/" },
+                    { id: "v1_2", name: "第301讲.四则运算一-[2.添去括号凑整].mp4", size: "61.7M", url: "https://pan.quark.cn/" }
+                ]
             }
-        }
+        ];
 
-        // Initialize App
-        function initApp() {
-            renderChapters();
-            renderLessons();
-            updateOverallProgress();
+        let currentChapterId = 1;
+        let chapters = JSON.parse(localStorage.getItem('kids_study_chapters')) || defaultChapters;
+        let progress = JSON.parse(localStorage.getItem('kids_study_progress')) || {};
+        
+        // 预置丰富的语数英错题例子（包含错字订正、应用题、英语语法等）
+        let wrongQuestions = JSON.parse(localStorage.getItem('kids_wrong_questions')) || [
+            { id: 'w1', subject: 'chinese', desc: '【错别字订正】把“辨别”的“辨”字误写成了“辩论”的“辩”。正确写法：中间是“丶”和“フ”，不加言字旁。', img: '', fixed: false, date: '2026-03-30' },
+            { id: 'w2', subject: 'chinese', desc: '【古诗默写】《望庐山瀑布》中“遥看瀑布挂前川”的“瀑”字三点水写成了宝盖头。', img: '', fixed: true, date: '2026-03-29' },
+            { id: 'w3', subject: 'math', desc: '【应用题】鸡兔同笼：假设全是兔，计算公式中的总脚数减去实际脚数后，除以每只鸡和兔的脚数差时弄反了。', img: '', fixed: false, date: '2026-03-30' },
+            { id: 'w4', subject: 'math', desc: '【计算题】简便运算漏掉了括号前面的负号（变号法则错误）： 56 - (23 - 14) 误算为 56 - 23 - 14。', img: '', fixed: true, date: '2026-03-28' },
+            { id: 'w5', subject: 'english', desc: '【语法错题】一般现在时第三人称单数：He like playing football 错写，like 应该加 s 变成 likes。', img: '', fixed: false, date: '2026-03-30' }
+        ];
+        let currentSubjectFilter = 'all';
 
-            // Bind Modal Events
-            document.getElementById('open-settings-btn').addEventListener('click', openSettingsModal);
-            document.getElementById('close-settings-btn').addEventListener('click', closeSettingsModal);
-            document.getElementById('save-settings-btn').addEventListener('click', saveSettings);
-            document.getElementById('apply-batch-links-btn').addEventListener('click', applyBatchPastedLinks);
-            document.getElementById('reset-progress-btn').addEventListener('click', resetProgress);
-            document.getElementById('close-celebration-btn').addEventListener('click', () => {
-                document.getElementById('celebration-modal').classList.add('hidden');
-            });
+        document.addEventListener('DOMContentLoaded', () => {
+            renderChaptersList();
+            renderCurrentChapter();
+            renderWrongQuestions();
+            lucide.createIcons();
+        });
 
-            // PWA Modal Bindings
-            document.getElementById('open-pwa-guide-btn').addEventListener('click', () => {
-                document.getElementById('pwa-modal').classList.remove('hidden');
-            });
-            document.getElementById('close-pwa-btn').addEventListener('click', () => {
-                document.getElementById('pwa-modal').classList.add('hidden');
-            });
-            document.getElementById('confirm-pwa-btn').addEventListener('click', () => {
-                document.getElementById('pwa-modal').classList.add('hidden');
-            });
-        }
+        function switchTab(tab) {
+            const studyView = document.getElementById('view-study');
+            const wrongView = document.getElementById('view-wrong');
+            const btnStudy = document.getElementById('tab-btn-study');
+            const btnWrong = document.getElementById('tab-btn-wrong');
 
-        // Render Left Sidebar Chapters
-        function renderChapters() {
-            const listEl = document.getElementById('chapter-list');
-            listEl.innerHTML = '';
-            document.getElementById('chapter-count-badge').textContent = `${courseData.chapters.length} 讲`;
-
-            courseData.chapters.forEach(ch => {
-                const totalInCh = ch.lessons.length;
-                const completedInCh = ch.lessons.filter(l => completedLessons[l.id]).length;
-                const isFinished = completedInCh === totalInCh && totalInCh > 0;
-                const isActive = ch.id === activeChapterId;
-
-                const item = document.createElement('div');
-                item.className = `p-3.5 rounded-2xl cursor-pointer border-2 transition-all btn-touch ${
-                    isActive 
-                        ? 'bg-amber-100/80 border-amber-400 shadow-sm' 
-                        : 'bg-white border-slate-100 hover:border-slate-200'
-                }`;
-
-                item.onclick = () => {
-                    activeChapterId = ch.id;
-                    renderChapters();
-                    renderLessons();
-                };
-
-                item.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-9 h-9 rounded-xl bg-gradient-to-br ${ch.color} text-white flex items-center justify-center font-bold text-sm shadow-sm">
-                                <i class="fa-solid ${ch.icon}"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-slate-800 text-xs md:text-sm">${ch.title}</h3>
-                                <p class="text-[11px] text-slate-400 font-medium">${completedInCh} / ${totalInCh} 节</p>
-                            </div>
-                        </div>
-                        ${isFinished ? '<span class="text-base">⭐</span>' : ''}
-                    </div>
-                `;
-                listEl.appendChild(item);
-            });
-        }
-
-        // Render Video Lessons Grid
-        function renderLessons() {
-            const chapter = courseData.chapters.find(c => c.id === activeChapterId);
-            if (!chapter) return;
-
-            document.getElementById('current-chapter-title').innerHTML = `
-                <i class="fa-solid ${chapter.icon} text-amber-300"></i> ${chapter.title}
-            `;
-
-            const lessonsEl = document.getElementById('lessons-container');
-            lessonsEl.innerHTML = '';
-
-            const totalInCh = chapter.lessons.length;
-            const completedInCh = chapter.lessons.filter(l => completedLessons[l.id]).length;
-            const percent = totalInCh > 0 ? Math.round((completedInCh / totalInCh) * 100) : 0;
-
-            document.getElementById('chapter-progress-text').textContent = `${completedInCh} / ${totalInCh}`;
-            document.getElementById('chapter-progress-bar').style.width = `${percent}%`;
-
-            chapter.lessons.forEach((lesson, idx) => {
-                const isDone = !!completedLessons[lesson.id];
-                const targetUrl = lesson.url?.trim() || courseData.globalUrl || "https://pan.quark.cn";
-
-                const card = document.createElement('div');
-                card.className = `p-4 rounded-2xl border-2 transition-all flex flex-col justify-between ${
-                    isDone 
-                        ? 'bg-emerald-50/70 border-emerald-300' 
-                        : 'bg-white border-slate-200 shadow-sm hover:border-sky-300'
-                }`;
-
-                card.innerHTML = `
-                    <div class="flex items-start justify-between gap-3">
-                        <div class="flex items-start space-x-3">
-                            <span class="w-7 h-7 rounded-full ${isDone ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-500'} font-black text-xs flex items-center justify-center shrink-0 mt-0.5">
-                                ${idx + 1}
-                            </span>
-                            <div>
-                                <h4 class="font-black text-slate-800 text-sm md:text-base leading-snug">${lesson.name}</h4>
-                                <div class="flex items-center gap-2 mt-1">
-                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-500">
-                                        <i class="fa-solid fa-hard-drive mr-1"></i>${lesson.size || '视频'}
-                                    </span>
-                                    ${isDone 
-                                        ? '<span class="text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700"><i class="fa-solid fa-check mr-1"></i>已打卡</span>' 
-                                        : '<span class="text-[10px] font-medium text-slate-400">未学习</span>'}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Toggle Star Completion Button -->
-                        <button onclick="toggleLessonDone('${lesson.id}')" class="btn-touch shrink-0 p-1.5 ${isDone ? 'text-amber-400 hover:text-amber-500' : 'text-slate-300 hover:text-slate-400'}" title="打卡标记">
-                            <i class="${isDone ? 'fa-solid' : 'fa-regular'} fa-star text-2xl md:text-3xl"></i>
-                        </button>
-                    </div>
-
-                    <!-- Bottom Controls -->
-                    <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between">
-                        <button onclick="toggleLessonDone('${lesson.id}')" class="text-xs font-bold ${isDone ? 'text-emerald-700' : 'text-slate-400 hover:text-sky-600'} flex items-center gap-1">
-                            <i class="fa-solid ${isDone ? 'fa-circle-check text-emerald-500' : 'fa-circle-notch'}"></i>
-                            ${isDone ? '已学习（按此取消）' : '点击勾选已完成'}
-                        </button>
-
-                        <!-- Direct Netdisk Link Open -->
-                        <a href="${targetUrl}" target="_blank" rel="noopener noreferrer" class="btn-touch bg-gradient-to-r from-sky-400 to-blue-500 hover:from-sky-500 hover:to-blue-600 text-white font-black text-xs px-3.5 py-2 rounded-xl shadow-md border-b-2 border-blue-700 flex items-center gap-1.5">
-                            <span>去观看</span>
-                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                        </a>
-                    </div>
-                `;
-                lessonsEl.appendChild(card);
-            });
-        }
-
-        // Toggle Mark Completed
-        function toggleLessonDone(lessonId) {
-            const current = !!completedLessons[lessonId];
-            if (!current) {
-                completedLessons[lessonId] = true;
-                playChimeSound();
+            if (tab === 'study') {
+                studyView.classList.remove('hidden');
+                wrongView.classList.add('hidden');
+                btnStudy.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-emerald-500 text-white shadow-xs";
+                btnWrong.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-emerald-700 hover:bg-emerald-100";
             } else {
-                delete completedLessons[lessonId];
-            }
-
-            localStorage.setItem(STORAGE_KEY_PROGRESS, JSON.stringify(completedLessons));
-            renderChapters();
-            renderLessons();
-            updateOverallProgress();
-
-            // Check if active chapter is now fully complete
-            const chapter = courseData.chapters.find(c => c.id === activeChapterId);
-            if (chapter) {
-                const totalInCh = chapter.lessons.length;
-                const completedInCh = chapter.lessons.filter(l => completedLessons[l.id]).length;
-                if (!current && totalInCh > 0 && completedInCh === totalInCh) {
-                    setTimeout(() => {
-                        document.getElementById('celebration-modal').classList.remove('hidden');
-                    }, 300);
-                }
+                studyView.classList.add('hidden');
+                wrongView.classList.remove('hidden');
+                btnWrong.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-amber-500 text-white shadow-xs";
+                btnStudy.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-emerald-700 hover:bg-emerald-100";
+                renderWrongQuestions();
             }
         }
 
-        // Update Total Stats
-        function updateOverallProgress() {
-            let total = 0;
-            let done = 0;
-            courseData.chapters.forEach(ch => {
-                ch.lessons.forEach(l => {
-                    total++;
-                    if (completedLessons[l.id]) done++;
-                });
+        function renderChaptersList() {
+            const container = document.getElementById('course-chapters-list');
+            container.innerHTML = '';
+            chapters.forEach(chap => {
+                let completedCount = chap.videos.filter(v => progress[v.id]).length;
+                let isSelected = chap.id === currentChapterId;
+                let div = document.createElement('div');
+                div.className = `p-4 rounded-2xl cursor-pointer transition-all border ${isSelected ? 'bg-emerald-500 text-white border-emerald-500 shadow-md shadow-emerald-200' : 'bg-gray-50 hover:bg-emerald-50 border-gray-100 text-gray-700'}`;
+                div.onclick = () => { currentChapterId = chap.id; renderChaptersList(); renderCurrentChapter(); };
+                div.innerHTML = `<div class="flex items-center justify-between mb-1"><span class="text-xs font-bold px-2 py-0.5 rounded-md ${isSelected ? 'bg-emerald-600 text-emerald-100' : 'bg-gray-200 text-gray-600'}">${chap.badge}</span><span class="text-xs font-medium opacity-80">${completedCount}/${chap.videos.length} 已学</span></div><div class="font-fun text-base">${chap.title}</div>`;
+                container.appendChild(div);
             });
-
-            const percent = total > 0 ? Math.round((done / total) * 100) : 0;
-            document.getElementById('total-progress-text').textContent = `${done} / ${total} (${percent}%)`;
         }
 
-        // Open Parent Settings Modal
-        function openSettingsModal() {
-            document.getElementById('global-netdisk-url').value = courseData.globalUrl || '';
-            const listContainer = document.getElementById('settings-lessons-list');
-            listContainer.innerHTML = '';
-
-            courseData.chapters.forEach(ch => {
-                const chBox = document.createElement('div');
-                chBox.className = 'bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2.5';
-                
-                let lessonsHtml = '';
-                ch.lessons.forEach(l => {
-                    lessonsHtml += `
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 bg-white p-2 rounded-xl border border-slate-100">
-                            <span class="text-xs font-bold text-slate-700 truncate sm:w-1/3">${l.name}</span>
-                            <input type="text" data-lesson-id="${l.id}" value="${l.url || ''}" class="lesson-url-input flex-1 border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-mono focus:border-sky-500 focus:outline-none" placeholder="可单独粘贴本视频夸克分享链接...">
+        function renderCurrentChapter() {
+            const chap = chapters.find(c => c.id === currentChapterId);
+            document.getElementById('current-chapter-badge').innerText = chap.badge;
+            document.getElementById('current-chapter-title').innerText = chap.title;
+            const container = document.getElementById('video-list-container');
+            container.innerHTML = '';
+            chap.videos.forEach((video, index) => {
+                let isDone = !!progress[video.id];
+                let card = document.createElement('div');
+                card.className = `p-4 rounded-2xl border transition-all flex items-center justify-between ${isDone ? 'bg-emerald-50/60 border-emerald-200' : 'bg-white border-gray-100 hover:border-emerald-200 shadow-xs'}`;
+                card.innerHTML = `
+                    <div class="flex items-center space-x-3 flex-1 min-w-0 pr-4">
+                        <button onclick="toggleVideoProgress('${video.id}')" class="btn-touch w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isDone ? 'bg-amber-400 text-white shadow-sm shadow-amber-200' : 'bg-gray-100 text-gray-300 hover:bg-gray-200'}">
+                            <i data-lucide="star" class="w-5 h-5 ${isDone ? 'fill-current' : ''}"></i>
+                        </button>
+                        <div class="min-w-0 flex-1">
+                            <h4 class="text-sm font-bold text-gray-800 truncate ${isDone ? 'line-through text-gray-400' : ''}">${index + 1}. ${video.name}</h4>
+                            <span class="text-xs text-gray-400">大小: ${video.size}</span>
                         </div>
-                    `;
-                });
-
-                chBox.innerHTML = `
-                    <div class="font-black text-xs text-sky-800 flex items-center gap-1.5">
-                        <i class="fa-solid ${ch.icon}"></i> ${ch.title}
                     </div>
-                    ${lessonsHtml}
-                `;
-                listContainer.appendChild(chBox);
+                    <a href="${video.url}" target="_blank" class="btn-touch px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-xl shadow-sm shadow-emerald-200 flex items-center space-x-1 shrink-0">
+                        <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+                        <span>去观看</span>
+                    </a>`;
+                container.appendChild(card);
             });
-
-            document.getElementById('settings-modal').classList.remove('hidden');
+            lucide.createIcons();
         }
 
-        function closeSettingsModal() {
-            document.getElementById('settings-modal').classList.add('hidden');
+        function toggleVideoProgress(videoId) {
+            progress[videoId] = !progress[videoId];
+            localStorage.setItem('kids_study_progress', JSON.stringify(progress));
+            renderChaptersList();
+            renderCurrentChapter();
         }
 
-        // Save Custom Netdisk URLs
-        function saveSettings() {
-            const globalUrl = document.getElementById('global-netdisk-url').value.trim();
-            courseData.globalUrl = globalUrl;
-
-            // Read individual lesson URLs
-            const inputs = document.querySelectorAll('.lesson-url-input');
-            inputs.forEach(input => {
-                const lessonId = input.getAttribute('data-lesson-id');
-                const urlVal = input.value.trim();
-
-                courseData.chapters.forEach(ch => {
-                    const found = ch.lessons.find(l => l.id === lessonId);
-                    if (found) {
-                        found.url = urlVal;
-                    }
-                });
-            });
-
-            localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify(courseData));
-            closeSettingsModal();
-            renderLessons();
-        }
-
-        // Apply Batch Pasted Links
-        function applyBatchPastedLinks() {
-            const rawText = document.getElementById('batch-links-input').value.trim();
-            if (!rawText) return;
-
-            const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-            let lineIdx = 0;
-
-            const inputs = document.querySelectorAll('.lesson-url-input');
-            inputs.forEach(input => {
-                if (lineIdx < lines.length) {
-                    input.value = lines[lineIdx];
-                    lineIdx++;
+        function filterSubject(sub) {
+            currentSubjectFilter = sub;
+            ['all', 'chinese', 'math', 'english'].forEach(s => {
+                let btn = document.getElementById(`sub-${s}`);
+                if (s === sub) {
+                    btn.className = "flex-1 sm:flex-none px-4 py-2 rounded-2xl text-xs font-bold bg-emerald-500 text-white shadow-xs";
+                } else {
+                    btn.className = "flex-1 sm:flex-none px-4 py-2 rounded-2xl text-xs font-bold bg-gray-100 text-gray-600 hover:bg-gray-200";
                 }
             });
-
-            alert(`已成功将前 ${lineIdx} 条链接依次填入下方框中！点击底部“保存并生效”即可保存。`);
+            renderWrongQuestions();
         }
 
-        // Reset Progress
-        function resetProgress() {
-            if (confirm("确定要清空所有已学习打卡记录吗？")) {
-                completedLessons = {};
-                localStorage.removeItem(STORAGE_KEY_PROGRESS);
-                renderChapters();
-                renderLessons();
-                updateOverallProgress();
-                closeSettingsModal();
+        function renderWrongQuestions() {
+            const container = document.getElementById('wrong-questions-container');
+            container.innerHTML = '';
+            
+            let filtered = wrongQuestions.filter(q => currentSubjectFilter === 'all' || q.subject === currentSubjectFilter);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="col-span-2 text-center py-12 text-gray-400 text-sm">太棒啦！当前科目下没有未订正的错题！🎉</div>`;
+                return;
+            }
+
+            filtered.forEach(q => {
+                let subName = q.subject === 'math' ? '🔢 数学' : (q.subject === 'chinese' ? '📖 语文' : '🔤 英语');
+                let card = document.createElement('div');
+                card.className = `p-5 rounded-3xl border transition-all flex flex-col justify-between ${q.fixed ? 'bg-emerald-50/50 border-emerald-200' : 'bg-white border-amber-200 shadow-sm'}`;
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold px-2.5 py-1 rounded-full ${q.subject === 'math' ? 'bg-blue-100 text-blue-700' : (q.subject === 'chinese' ? 'bg-rose-100 text-rose-700' : 'bg-purple-100 text-purple-700')}">${subName}</span>
+                            <span class="text-xs text-gray-400">${q.date}</span>
+                        </div>
+                        <p class="text-sm font-medium text-gray-800 mb-3 ${q.fixed ? 'line-through text-gray-400' : ''}">${q.desc}</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-gray-100 mt-2">
+                        <button onclick="toggleWrongFixed('${q.id}')" class="btn-touch px-4 py-2 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-all ${q.fixed ? 'bg-emerald-500 text-white shadow-sm shadow-emerald-200' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}">
+                            <i data-lucide="check-circle" class="w-4 h-4"></i>
+                            <span>${q.fixed ? '已订正 (再次点击取消)' : '✅ 打勾确认订正'}</span>
+                        </button>
+                        <button onclick="deleteWrong('${q.id}')" class="text-gray-400 hover:text-red-500 text-xs px-2 py-1">删除</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function openAddWrongModal() {
+            document.getElementById('wrong-desc-input').value = '';
+            document.getElementById('wrong-img-input').value = '';
+            document.getElementById('add-wrong-modal').classList.remove('hidden');
+        }
+
+        function closeAddWrongModal() {
+            document.getElementById('add-wrong-modal').classList.add('hidden');
+        }
+
+        function saveNewWrongQuestion() {
+            let subject = document.getElementById('wrong-subject-input').value;
+            let desc = document.getElementById('wrong-desc-input').value.trim();
+            let img = document.getElementById('wrong-img-input').value.trim();
+
+            if (!desc) {
+                alert('请填写错题内容或知识点描述！');
+                return;
+            }
+
+            let newQ = {
+                id: 'w_' + Date.now(),
+                subject: subject,
+                desc: desc,
+                img: img,
+                fixed: false,
+                date: new Date().toISOString().slice(0, 10)
+            };
+
+            wrongQuestions.unshift(newQ);
+            localStorage.setItem('kids_wrong_questions', JSON.stringify(wrongQuestions));
+            closeAddWrongModal();
+            renderWrongQuestions();
+        }
+
+        function toggleWrongFixed(id) {
+            let q = wrongQuestions.find(item => item.id === id);
+            if (q) {
+                q.fixed = !q.fixed;
+                localStorage.setItem('kids_wrong_questions', JSON.stringify(wrongQuestions));
+                renderWrongQuestions();
             }
         }
 
-        // Window Load Handler
-        window.onload = function() {
-            initApp();
-        };
+        function deleteWrong(id) {
+            if (confirm('确定要删除这条错题记录吗？')) {
+                wrongQuestions = wrongQuestions.filter(item => item.id !== id);
+                localStorage.setItem('kids_wrong_questions', JSON.stringify(wrongQuestions));
+                renderWrongQuestions();
+            }
+        }
+
+        function toggleSettings() {
+            const modal = document.getElementById('settings-modal');
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                const container = document.getElementById('settings-links-container');
+                container.innerHTML = '<div class="text-xs text-blue-600 mb-2">配置课程网盘链接：</div>';
+                chapters.forEach(chap => {
+                    chap.videos.forEach(video => {
+                        let row = document.createElement('div');
+                        row.className = 'flex items-center space-x-2 mb-2';
+                        row.innerHTML = `<span class="text-xs text-gray-500 w-1/3 truncate">${video.name}</span><input type="text" id="input_${video.id}" value="${video.url}" class="flex-1 bg-gray-50 border border-gray-200 rounded-2xl px-3 py-1.5 text-xs text-gray-700">`;
+                        container.appendChild(row);
+                    });
+                });
+            }
+        }
+
+        function saveSettings() {
+            chapters.forEach(chap => {
+                chap.videos.forEach(video => {
+                    let input = document.getElementById(`input_${video.id}`);
+                    if (input) video.url = input.value.trim() || "https://pan.quark.cn/";
+                });
+            });
+            localStorage.setItem('kids_study_chapters', JSON.stringify(chapters));
+            toggleSettings();
+            alert("网盘链接保存成功！");
+        }
     </script>
 </body>
 </html>
