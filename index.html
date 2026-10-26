@@ -99,19 +99,19 @@
             </div>
             <button onclick="openAddWrongModal()" class="w-full sm:w-auto px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-fun text-sm rounded-2xl shadow-md shadow-amber-200 flex items-center justify-center space-x-2 btn-touch">
                 <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                <span>+ 记录新错题</span>
+                <span>+ 拍照/记录错题</span>
             </button>
         </div>
 
         <div id="wrong-questions-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1"></div>
     </main>
 
-    <!-- 新增错题弹窗 -->
+    <!-- 新增错题弹窗（支持拍照/选相册） -->
     <div id="add-wrong-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-lg w-full flex flex-col shadow-2xl overflow-hidden">
             <div class="p-5 border-b border-gray-100 flex items-center justify-between bg-amber-50">
                 <h3 class="font-fun text-xl text-amber-900 flex items-center">
-                    <i data-lucide="file-warning" class="w-5 h-5 mr-2 text-amber-600"></i>
+                    <i data-lucide="camera" class="w-5 h-5 mr-2 text-amber-600"></i>
                     添加新错题
                 </h3>
                 <button onclick="closeAddWrongModal()" class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-500 hover:bg-gray-100">
@@ -128,12 +128,12 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">错题内容/知识点描述（如错别字、应用题等）</label>
-                    <textarea id="wrong-desc-input" rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-2xl p-3 text-sm text-gray-700 focus:outline-none focus:border-amber-500" placeholder="例如：错别字：把‘辨别’的‘辨’写成了‘辩’论的‘辩’..."></textarea>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">错题内容/知识点描述</label>
+                    <textarea id="wrong-desc-input" rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-2xl p-3 text-sm text-gray-700 focus:outline-none focus:border-amber-500" placeholder="例如：错别字订正、应用题计算错误等..."></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">错题照片或截图（选填：图片网址）</label>
-                    <input type="text" id="wrong-img-input" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:border-amber-500" placeholder="可输入图片链接，无图则留空">
+                    <label class="block text-xs font-bold text-gray-600 mb-1">拍照或从相册选择错题照片</label>
+                    <input type="file" id="wrong-file-input" accept="image/*" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-2 text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200">
                 </div>
             </div>
             <div class="p-4 border-t border-gray-100 bg-gray-50 flex justify-end space-x-3">
@@ -181,13 +181,9 @@
         let chapters = JSON.parse(localStorage.getItem('kids_study_chapters')) || defaultChapters;
         let progress = JSON.parse(localStorage.getItem('kids_study_progress')) || {};
         
-        // 预置丰富的语数英错题例子（包含错字订正、应用题、英语语法等）
         let wrongQuestions = JSON.parse(localStorage.getItem('kids_wrong_questions')) || [
-            { id: 'w1', subject: 'chinese', desc: '【错别字订正】把“辨别”的“辨”字误写成了“辩论”的“辩”。正确写法：中间是“丶”和“フ”，不加言字旁。', img: '', fixed: false, date: '2026-03-30' },
-            { id: 'w2', subject: 'chinese', desc: '【古诗默写】《望庐山瀑布》中“遥看瀑布挂前川”的“瀑”字三点水写成了宝盖头。', img: '', fixed: true, date: '2026-03-29' },
-            { id: 'w3', subject: 'math', desc: '【应用题】鸡兔同笼：假设全是兔，计算公式中的总脚数减去实际脚数后，除以每只鸡和兔的脚数差时弄反了。', img: '', fixed: false, date: '2026-03-30' },
-            { id: 'w4', subject: 'math', desc: '【计算题】简便运算漏掉了括号前面的负号（变号法则错误）： 56 - (23 - 14) 误算为 56 - 23 - 14。', img: '', fixed: true, date: '2026-03-28' },
-            { id: 'w5', subject: 'english', desc: '【语法错题】一般现在时第三人称单数：He like playing football 错写，like 应该加 s 变成 likes。', img: '', fixed: false, date: '2026-03-30' }
+            { id: 'w1', subject: 'chinese', desc: '【错别字订正】把“辨别”的“辨”字误写成了“辩论”的“辩”。', img: '', fixed: false, date: '2026-03-30' },
+            { id: 'w2', subject: 'math', desc: '【应用题】鸡兔同笼脚数差计算错误。', img: '', fixed: false, date: '2026-03-30' }
         ];
         let currentSubjectFilter = 'all';
 
@@ -304,6 +300,7 @@
                             <span class="text-xs text-gray-400">${q.date}</span>
                         </div>
                         <p class="text-sm font-medium text-gray-800 mb-3 ${q.fixed ? 'line-through text-gray-400' : ''}">${q.desc}</p>
+                        ${q.img ? `<img src="${q.img}" class="w-full h-40 object-cover rounded-2xl mb-3 border border-gray-100">` : ''}
                     </div>
                     <div class="flex items-center justify-between pt-3 border-t border-gray-100 mt-2">
                         <button onclick="toggleWrongFixed('${q.id}')" class="btn-touch px-4 py-2 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-all ${q.fixed ? 'bg-emerald-500 text-white shadow-sm shadow-emerald-200' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}">
@@ -320,7 +317,7 @@
 
         function openAddWrongModal() {
             document.getElementById('wrong-desc-input').value = '';
-            document.getElementById('wrong-img-input').value = '';
+            document.getElementById('wrong-file-input').value = '';
             document.getElementById('add-wrong-modal').classList.remove('hidden');
         }
 
@@ -331,18 +328,30 @@
         function saveNewWrongQuestion() {
             let subject = document.getElementById('wrong-subject-input').value;
             let desc = document.getElementById('wrong-desc-input').value.trim();
-            let img = document.getElementById('wrong-img-input').value.trim();
+            let fileInput = document.getElementById('wrong-file-input');
 
-            if (!desc) {
-                alert('请填写错题内容或知识点描述！');
+            if (!desc && fileInput.files.length === 0) {
+                alert('请填写错题描述，或者拍照/选择一张错题照片！');
                 return;
             }
 
+            if (fileInput.files.length > 0) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    finishSaveWrong(subject, desc, e.target.result);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                finishSaveWrong(subject, desc, '');
+            }
+        }
+
+        function finishSaveWrong(subject, desc, imgBase64) {
             let newQ = {
                 id: 'w_' + Date.now(),
                 subject: subject,
-                desc: desc,
-                img: img,
+                desc: desc || '拍照错题',
+                img: imgBase64,
                 fixed: false,
                 date: new Date().toISOString().slice(0, 10)
             };
