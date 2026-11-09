@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>小星星学习与错题乐园 - iPad专属版</title>
+    <title>小星星学习与错题乐园 - 组卷打印定制版</title>
     <!-- 引入 Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- 引入 Lucide 图标 -->
@@ -33,19 +33,39 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+
+        /* 打印专用样式：只打印抽查卷内容，隐藏其他界面元素 */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #print-modal, #print-modal * {
+                visibility: visible;
+            }
+            #print-modal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col select-none">
 
     <!-- 顶部导航栏 -->
-    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-emerald-100 px-4 py-3 flex items-center justify-between shadow-xs">
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-emerald-100 px-4 py-3 flex items-center justify-between shadow-xs no-print">
         <div class="flex items-center space-x-3">
             <div class="w-10 h-10 bg-emerald-500 rounded-2xl flex items-center justify-center text-white shadow-md shadow-emerald-200">
                 <i data-lucide="star" class="w-6 h-6 fill-current"></i>
             </div>
             <div>
                 <h1 class="font-fun text-xl text-emerald-800 tracking-wide">小星星学习与错题乐园 🌟</h1>
-                <p class="text-xs text-gray-500">看课打卡 + 语数英错题本</p>
+                <p class="text-xs text-gray-500">网盘看课打卡 + 语数英错题抽查组卷</p>
             </div>
         </div>
 
@@ -53,7 +73,7 @@
             <!-- 切换视图按钮 -->
             <div class="bg-emerald-50 p-1 rounded-2xl flex space-x-1 border border-emerald-200">
                 <button onclick="switchTab('study')" id="tab-btn-study" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-emerald-500 text-white shadow-xs">📚 课程打卡</button>
-                <button onclick="switchTab('wrong')" id="tab-btn-wrong" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-emerald-700 hover:bg-emerald-100">📝 错题跟进</button>
+                <button onclick="switchTab('wrong')" id="tab-btn-wrong" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-emerald-700 hover:bg-emerald-100">📝 错题跟进与组卷</button>
             </div>
 
             <!-- 家长后台设置按钮 -->
@@ -64,7 +84,7 @@
     </header>
 
     <!-- 课程打卡视图 -->
-    <main id="view-study" class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 md:grid-cols-12 gap-6">
+    <main id="view-study" class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 md:grid-cols-12 gap-6 no-print">
         <div class="md:col-span-4 space-y-4">
             <div class="bg-white rounded-3xl p-5 shadow-sm border border-emerald-100">
                 <h2 class="font-fun text-lg text-gray-700 mb-3 flex items-center">
@@ -88,31 +108,84 @@
         </div>
     </main>
 
-    <!-- 错题跟进系统视图 -->
-    <main id="view-wrong" class="flex-1 max-w-5xl w-full mx-auto p-4 md:p-6 hidden flex flex-col space-y-6">
+    <!-- 错题跟进系统视图（核心组卷打印功能） -->
+    <main id="view-wrong" class="flex-1 max-w-5xl w-full mx-auto p-4 md:p-6 hidden flex flex-col space-y-6 no-print">
+        <!-- 操作栏：科目筛选、全选组卷、拍照录入 -->
         <div class="flex flex-col sm:flex-row items-center justify-between bg-white p-4 rounded-3xl shadow-sm border border-emerald-100 gap-4">
-            <div class="flex space-x-2 w-full sm:w-auto">
-                <button onclick="filterSubject('all')" id="sub-all" class="flex-1 sm:flex-none px-4 py-2 rounded-2xl text-xs font-bold bg-emerald-500 text-white shadow-xs">全部科目</button>
-                <button onclick="filterSubject('chinese')" id="sub-chinese" class="flex-1 sm:flex-none px-4 py-2 rounded-2xl text-xs font-bold bg-gray-100 text-gray-600 hover:bg-gray-200">📖 语文</button>
-                <button onclick="filterSubject('math')" id="sub-math" class="flex-1 sm:flex-none px-4 py-2 rounded-2xl text-xs font-bold bg-gray-100 text-gray-600 hover:bg-gray-200">🔢 数学</button>
-                <button onclick="filterSubject('english')" id="sub-english" class="flex-1 sm:flex-none px-4 py-2 rounded-2xl text-xs font-bold bg-gray-100 text-gray-600 hover:bg-gray-200">🔤 英语</button>
+            <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                <button onclick="filterSubject('all')" id="sub-all" class="px-4 py-2 rounded-2xl text-xs font-bold bg-emerald-500 text-white shadow-xs">全部科目</button>
+                <button onclick="filterSubject('chinese')" id="sub-chinese" class="px-4 py-2 rounded-2xl text-xs font-bold bg-gray-100 text-gray-600 hover:bg-gray-200">📖 语文</button>
+                <button onclick="filterSubject('math')" id="sub-math" class="px-4 py-2 rounded-2xl text-xs font-bold bg-gray-100 text-gray-600 hover:bg-gray-200">🔢 数学</button>
+                <button onclick="filterSubject('english')" id="sub-english" class="px-4 py-2 rounded-2xl text-xs font-bold bg-gray-100 text-gray-600 hover:bg-gray-200">🔤 英语</button>
             </div>
-            <button onclick="openAddWrongModal()" class="w-full sm:w-auto px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-fun text-sm rounded-2xl shadow-md shadow-amber-200 flex items-center justify-center space-x-2 btn-touch">
-                <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                <span>+ 拍照/记录错题</span>
-            </button>
+            
+            <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                <!-- 组卷打印按钮 -->
+                <button onclick="openPrintPreview()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-fun text-sm rounded-2xl shadow-md shadow-indigo-200 flex items-center space-x-2 btn-touch">
+                    <i data-lucide="printer" class="w-4 h-4"></i>
+                    <span>🖨️ 生成抽查试卷 (<span id="selected-count">0</span>)</span>
+                </button>
+                <!-- 拍照录入按钮 -->
+                <button onclick="openAddWrongModal()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-fun text-sm rounded-2xl shadow-md shadow-amber-200 flex items-center space-x-2 btn-touch">
+                    <i data-lucide="camera" class="w-4 h-4"></i>
+                    <span>+ 拍照/录入错题</span>
+                </button>
+            </div>
         </div>
 
+        <!-- 全选/取消全选提示栏 -->
+        <div class="flex items-center justify-between px-2 text-xs text-gray-500">
+            <div class="flex items-center space-x-2">
+                <input type="checkbox" id="select-all-checkbox" onclick="toggleSelectAll(this)" class="w-4 h-4 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500 cursor-pointer">
+                <label for="select-all-checkbox" class="cursor-pointer font-bold">全选当前显示的错题用于抽查打印</label>
+            </div>
+            <div>勾选后点击上方“生成抽查试卷”，自动隐藏所有答案</div>
+        </div>
+
+        <!-- 错题卡片列表 -->
         <div id="wrong-questions-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1"></div>
     </main>
 
+    <!-- 纯题目抽查打印预览弹窗 -->
+    <div id="print-modal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-2 md:p-6">
+        <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[95vh] flex flex-col shadow-2xl overflow-hidden">
+            <!-- 弹窗顶栏 (打印时自动隐藏) -->
+            <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-indigo-50 no-print">
+                <h3 class="font-fun text-xl text-indigo-900 flex items-center">
+                    <i data-lucide="file-text" class="w-5 h-5 mr-2 text-indigo-600"></i>
+                    错题抽查打印预览（已隐藏答案与批改痕迹）
+                </h3>
+                <button onclick="closePrintPreview()" class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-500 hover:bg-gray-100">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <!-- 打印试卷内容区域 -->
+            <div class="p-6 md:p-10 overflow-y-auto space-y-6 flex-1 bg-white" id="print-content-area">
+                <!-- 动态填充纯题目卷面 -->
+            </div>
+
+            <!-- 弹窗底栏操作 (打印时自动隐藏) -->
+            <div class="p-4 border-t border-gray-100 bg-gray-50 flex items-center justify-between no-print">
+                <div class="text-xs text-gray-400">提示：连接无线打印机即可直接输出 A4 纸用于现场抽查。</div>
+                <div class="flex space-x-3">
+                    <button onclick="closePrintPreview()" class="px-5 py-2.5 rounded-2xl text-sm font-bold text-gray-600 hover:bg-gray-200 transition-colors">关闭预览</button>
+                    <button onclick="window.print()" class="px-6 py-2.5 rounded-2xl text-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-200 flex items-center space-x-2">
+                        <i data-lucide="printer" class="w-4 h-4"></i>
+                        <span>立即打印试卷</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 新增错题弹窗（支持拍照/选相册） -->
-    <div id="add-wrong-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div id="add-wrong-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4 no-print">
         <div class="bg-white rounded-3xl max-w-lg w-full flex flex-col shadow-2xl overflow-hidden">
             <div class="p-5 border-b border-gray-100 flex items-center justify-between bg-amber-50">
                 <h3 class="font-fun text-xl text-amber-900 flex items-center">
                     <i data-lucide="camera" class="w-5 h-5 mr-2 text-amber-600"></i>
-                    添加新错题
+                    拍照/录入新错题
                 </h3>
                 <button onclick="closeAddWrongModal()" class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-500 hover:bg-gray-100">
                     <i data-lucide="x" class="w-5 h-5"></i>
@@ -122,17 +195,17 @@
                 <div>
                     <label class="block text-xs font-bold text-gray-600 mb-1">选择科目</label>
                     <select id="wrong-subject-input" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:border-amber-500">
-                        <option value="chinese">📖 语文</option>
                         <option value="math">🔢 数学</option>
+                        <option value="chinese">📖 语文</option>
                         <option value="english">🔤 英语</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">错题内容/知识点描述</label>
-                    <textarea id="wrong-desc-input" rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-2xl p-3 text-sm text-gray-700 focus:outline-none focus:border-amber-500" placeholder="例如：错别字订正、应用题计算错误等..."></textarea>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">题目描述/知识点（例如：环形公路运费最优问题）</label>
+                    <textarea id="wrong-desc-input" rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-2xl p-3 text-sm text-gray-700 focus:outline-none focus:border-amber-500" placeholder="写下题目核心考点或文字描述..."></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">拍照或从相册选择错题照片</label>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">拍照或从相册选择错题原图（自动过滤旧草稿）</label>
                     <input type="file" id="wrong-file-input" accept="image/*" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-2 text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200">
                 </div>
             </div>
@@ -144,7 +217,7 @@
     </div>
 
     <!-- 家长后台设置弹窗 -->
-    <div id="settings-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div id="settings-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4 no-print">
         <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
             <div class="p-5 border-b border-gray-100 flex items-center justify-between bg-emerald-50">
                 <h3 class="font-fun text-xl text-emerald-900 flex items-center">
@@ -163,7 +236,7 @@
         </div>
     </div>
 
-    <!-- JavaScript 逻辑 -->
+    <!-- JavaScript 核心逻辑 -->
     <script>
         const defaultChapters = [
             {
@@ -181,9 +254,11 @@
         let chapters = JSON.parse(localStorage.getItem('kids_study_chapters')) || defaultChapters;
         let progress = JSON.parse(localStorage.getItem('kids_study_progress')) || {};
         
+        // 错题本数据结构（新增 selected 状态用于自由勾选组卷）
         let wrongQuestions = JSON.parse(localStorage.getItem('kids_wrong_questions')) || [
-            { id: 'w1', subject: 'chinese', desc: '【错别字订正】把“辨别”的“辨”字误写成了“辩论”的“辩”。', img: '', fixed: false, date: '2026-03-30' },
-            { id: 'w2', subject: 'math', desc: '【应用题】鸡兔同笼脚数差计算错误。', img: '', fixed: false, date: '2026-03-30' }
+            { id: 'w1', subject: 'math', desc: '【第5题·环形公路运费最优化】A仓库存库40吨，B库5吨...求完成上述运输计划最少需要多少元运费？', img: '', fixed: false, selected: true, date: '2026-03-30' },
+            { id: 'w2', subject: 'chinese', desc: '【错别字订正】把“辨别”的“辨”字误写成了“辩论”的“辩”。', img: '', fixed: false, selected: true, date: '2026-03-30' },
+            { id: 'w3', subject: 'english', desc: '【语法错题】一般现在时第三人称单数：He like playing football 错写。', img: '', fixed: false, selected: false, date: '2026-03-30' }
         ];
         let currentSubjectFilter = 'all';
 
@@ -269,9 +344,9 @@
             ['all', 'chinese', 'math', 'english'].forEach(s => {
                 let btn = document.getElementById(`sub-${s}`);
                 if (s === sub) {
-                    btn.className = "flex-1 sm:flex-none px-4 py-2 rounded-2xl text-xs font-bold bg-emerald-500 text-white shadow-xs";
+                    btn.className = "px-4 py-2 rounded-2xl text-xs font-bold bg-emerald-500 text-white shadow-xs";
                 } else {
-                    btn.className = "flex-1 sm:flex-none px-4 py-2 rounded-2xl text-xs font-bold bg-gray-100 text-gray-600 hover:bg-gray-200";
+                    btn.className = "px-4 py-2 rounded-2xl text-xs font-bold bg-gray-100 text-gray-600 hover:bg-gray-200";
                 }
             });
             renderWrongQuestions();
@@ -283,24 +358,31 @@
             
             let filtered = wrongQuestions.filter(q => currentSubjectFilter === 'all' || q.subject === currentSubjectFilter);
 
+            // 更新已勾选数量
+            let selectedTotal = wrongQuestions.filter(q => q.selected).length;
+            document.getElementById('selected-count').innerText = selectedTotal;
+
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="col-span-2 text-center py-12 text-gray-400 text-sm">太棒啦！当前科目下没有未订正的错题！🎉</div>`;
+                container.innerHTML = `<div class="col-span-2 text-center py-12 text-gray-400 text-sm">当前科目下暂无错题记录！</div>`;
                 return;
             }
 
             filtered.forEach(q => {
                 let subName = q.subject === 'math' ? '🔢 数学' : (q.subject === 'chinese' ? '📖 语文' : '🔤 英语');
                 let card = document.createElement('div');
-                card.className = `p-5 rounded-3xl border transition-all flex flex-col justify-between ${q.fixed ? 'bg-emerald-50/50 border-emerald-200' : 'bg-white border-amber-200 shadow-sm'}`;
+                card.className = `p-5 rounded-3xl border transition-all flex flex-col justify-between ${q.selected ? 'bg-indigo-50/40 border-indigo-300 shadow-sm' : 'bg-white border-gray-100 shadow-xs'}`;
                 
                 card.innerHTML = `
                     <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-bold px-2.5 py-1 rounded-full ${q.subject === 'math' ? 'bg-blue-100 text-blue-700' : (q.subject === 'chinese' ? 'bg-rose-100 text-rose-700' : 'bg-purple-100 text-purple-700')}">${subName}</span>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center space-x-2">
+                                <input type="checkbox" ${q.selected ? 'checked' : ''} onchange="toggleSelectWrong('${q.id}')" class="w-5 h-5 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500 cursor-pointer">
+                                <span class="text-xs font-bold px-2.5 py-1 rounded-full ${q.subject === 'math' ? 'bg-blue-100 text-blue-700' : (q.subject === 'chinese' ? 'bg-rose-100 text-rose-700' : 'bg-purple-100 text-purple-700')}">${subName}</span>
+                            </div>
                             <span class="text-xs text-gray-400">${q.date}</span>
                         </div>
                         <p class="text-sm font-medium text-gray-800 mb-3 ${q.fixed ? 'line-through text-gray-400' : ''}">${q.desc}</p>
-                        ${q.img ? `<img src="${q.img}" class="w-full h-40 object-cover rounded-2xl mb-3 border border-gray-100">` : ''}
+                        ${q.img ? `<div class="relative"><img src="${q.img}" class="w-full h-36 object-cover rounded-2xl mb-3 border border-gray-100"><span class="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-md">原图已加载</span></div>` : ''}
                     </div>
                     <div class="flex items-center justify-between pt-3 border-t border-gray-100 mt-2">
                         <button onclick="toggleWrongFixed('${q.id}')" class="btn-touch px-4 py-2 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-all ${q.fixed ? 'bg-emerald-500 text-white shadow-sm shadow-emerald-200' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}">
@@ -313,6 +395,70 @@
                 container.appendChild(card);
             });
             lucide.createIcons();
+        }
+
+        // 切换单条错题的组卷勾选状态
+        function toggleSelectWrong(id) {
+            let q = wrongQuestions.find(item => item.id === id);
+            if (q) {
+                q.selected = !q.selected;
+                localStorage.setItem('kids_wrong_questions', JSON.stringify(wrongQuestions));
+                renderWrongQuestions();
+            }
+        }
+
+        // 全选 / 取消全选
+        function toggleSelectAll(master) {
+            let filtered = wrongQuestions.filter(q => currentSubjectFilter === 'all' || q.subject === currentSubjectFilter);
+            filtered.forEach(q => {
+                q.selected = master.checked;
+            });
+            localStorage.setItem('kids_wrong_questions', JSON.stringify(wrongQuestions));
+            renderWrongQuestions();
+        }
+
+        // 打开纯题目抽查打印预览
+        function openPrintPreview() {
+            let selectedList = wrongQuestions.filter(q => q.selected);
+            if (selectedList.length === 0) {
+                alert('请先在错题本中勾选需要抽查打印的题目！');
+                return;
+            }
+
+            const contentArea = document.getElementById('print-content-area');
+            contentArea.innerHTML = `
+                <div class="text-center pb-6 border-b-2 border-gray-800 mb-6">
+                    <h2 class="font-fun text-3xl text-gray-900 tracking-wider">🌟 专属错题抽查过关测试卷 🌟</h2>
+                    <div class="flex justify-center space-x-8 mt-3 text-sm text-gray-600 font-bold">
+                        <p>姓名：__________</p>
+                        <p>日期：2026年___月___日</p>
+                        <p>得分：__________</p>
+                    </div>
+                </div>
+                <div class="space-y-8">
+            `;
+
+            selectedList.forEach((q, index) => {
+                let subLabel = q.subject === 'math' ? '[数学]' : (q.subject === 'chinese' ? '[语文]' : '[英语]');
+                contentArea.innerHTML += `
+                    <div class="p-5 border border-gray-300 rounded-2xl break-inside-avoid bg-white space-y-3">
+                        <div class="flex items-start justify-between">
+                            <h4 class="text-base font-bold text-gray-900 leading-relaxed">
+                                <span class="text-indigo-600 mr-2">第 ${index + 1} 题</span> ${subLabel} ${q.desc}
+                            </h4>
+                        </div>
+                        ${q.img ? `<div class="mt-2"><img src="${q.img}" class="max-h-64 object-contain rounded-xl border border-gray-200 mx-auto"></div>` : ''}
+                        <div class="pt-12 border-b border-dashed border-gray-300 pb-4 text-xs text-gray-300 text-right">（答题与演算区域）</div>
+                    </div>
+                `;
+            });
+
+            contentArea.innerHTML += `</div>`;
+            document.getElementById('print-modal').classList.remove('hidden');
+        }
+
+        function closePrintPreview() {
+            document.getElementById('print-modal').classList.add('hidden');
         }
 
         function openAddWrongModal() {
@@ -331,7 +477,7 @@
             let fileInput = document.getElementById('wrong-file-input');
 
             if (!desc && fileInput.files.length === 0) {
-                alert('请填写错题描述，或者拍照/选择一张错题照片！');
+                alert('请填写题目描述，或上传错题照片！');
                 return;
             }
 
@@ -353,6 +499,7 @@
                 desc: desc || '拍照错题',
                 img: imgBase64,
                 fixed: false,
+                selected: true, // 默认新拍的题直接选中加入组卷
                 date: new Date().toISOString().slice(0, 10)
             };
 
