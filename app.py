@@ -1,5 +1,7 @@
 import base64
 from datetime import datetime
+from io import BytesIO
+from PIL import Image
 import streamlit as st
 
 # 页面基础配置
@@ -100,7 +102,6 @@ with tab_wrong:
           "错题文字描述/核心知识点",
           placeholder="输入题目核心考点或清理草稿后的说明...",
       )
-      # 增加了拍照/相册选择组件
       uploaded_file = st.file_uploader(
           "拍照或从相册选择错题照片", type=["jpg", "jpeg", "png"]
       )
@@ -108,9 +109,18 @@ with tab_wrong:
       if st.button("保存并加入错题本"):
         img_data = ""
         if uploaded_file is not None:
-          bytes_data = uploaded_file.getvalue()
-          base64_str = base64.b64encode(bytes_data).decode("utf-8")
-          img_data = f"data:image/jpeg;base64,{base64_str}"
+          try:
+            # 核心优化：利用 PIL 自动将高清大图等比压缩，防止内存溢出和转圈卡死
+            image = Image.open(uploaded_file)
+            image.thumbnail((800, 800))  # 限制最大尺寸
+            if image.mode in ("RGBA", "P"):
+              image = image.convert("RGB")
+            buffered = BytesIO()
+            image.save(buffered, format="JPEG", quality=75)  # 压缩画质
+            base64_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+            img_data = f"data:image/jpeg;base64,{base64_str}"
+          except Exception as e:
+            st.error(f"图片处理失败: {e}")
 
         if new_desc or img_data:
           sub_code = (
@@ -184,7 +194,6 @@ with tab_wrong:
         else:
           st.markdown(f"**{q['desc']}**")
 
-        # 如果有上传照片，在卡片中直接预览
         if q.get("img"):
           st.image(q["img"], width=300)
 
