@@ -187,7 +187,7 @@
             <div class="brand-icon">🌟</div>
             <div class="brand-text">
                 <h1>星伴学堂 · 语数英智能学效中心</h1>
-                <p>每日计划跟催 · 每周大统筹 · 历史周复盘看板 · 家长管理后台</p>
+                <p>每日计划跟催 · 每周大统筹 · 历史周复盘看板 · 云端实时同步</p>
             </div>
         </div>
     </header>
@@ -310,7 +310,19 @@
                 <span class="day-date">自定义每日与每周大统筹任务</span>
             </div>
 
-            <h3 style="margin-top: 24px; font-size: 18px;">📌 管理每周大统筹项目</h3>
+            <!-- 云端同步配置区 -->
+            <div style="background: #ecfdf5; border-radius: 16px; padding: 20px; margin-top: 20px; border: 2px solid #34d399;">
+                <h3 style="margin-top:0; color: #065f46; font-size: 18px;">☁️ JSONBin.io 免费云端实时同步配置</h3>
+                <p style="font-size: 14px; color: #047857; margin-bottom: 12px;">在不同设备（iPad、手机）填入相同的 Bin ID 与 Master Key，即可实现多端实时数据互通！</p>
+                <div class="admin-form-row" style="margin-top: 10px;">
+                    <input type="text" id="sync-bin-id" class="admin-input" placeholder="输入你的 Bin ID">
+                    <input type="password" id="sync-api-key" class="admin-input" placeholder="输入你的 Master API Key">
+                    <button class="btn-primary" onclick="saveCloudConfig()">💾 保存并连接云端</button>
+                    <button class="btn-warning" onclick="pullCloudData()">🔄 手动从云端同步</button>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 30px; font-size: 18px;">📌 管理每周大统筹项目</h3>
             <table class="admin-table">
                 <thead><tr><th>项目名称</th><th>建议耗时</th><th>操作</th></tr></thead>
                 <tbody id="admin-weekly-tbody"></tbody>
@@ -359,7 +371,7 @@
 </div>
 
 <script>
-    const STORE_KEY = "xingban_study_v13";
+    const STORE_KEY = "xingban_study_v14";
     
     let defaultWeeklySchema = [
         { id: "w_cn", label: "📖 语文大统筹：大语文 / 现代文阅读 / 新概念", time: "60'" },
@@ -384,14 +396,14 @@
             { id: "math_3", label: "错题跟进", time: "20'" },
             { id: "math_4", label: "作业订正", time: "10'" }
         ]},
-        { subId: "en", subName: "🔤 英语", tasks: [
+        { id: "en", subName: "🔤 英语", tasks: [
             { id: "en_1", label: "RAZ精读", time: "40'" },
             { id: "en_2", label: "Basic 1000词", time: "30'" },
             { id: "en_3", label: "单词听写", time: "10'" },
             { id: "en_4", label: "错题跟进", time: "15'" },
             { id: "en_5", label: "作业订正", time: "10'" }
         ]},
-        { subId: "sport", subName: "🏃 运动打卡", tasks: [
+        { id: "sport", subName: "🏃 运动打卡", tasks: [
             { id: "sport_1", label: "跳绳锻炼", time: "15'" }
         ]}
     ];
@@ -402,7 +414,8 @@
         weekly: {},
         daily: {},
         historyWeeks: {},
-        timer: { count: 10, sec: 12, buf: 30 }
+        timer: { count: 10, sec: 12, buf: 30 },
+        cloudConfig: { binId: "", apiKey: "" }
     };
 
     try {
@@ -415,11 +428,73 @@
             state.daily = parsed.daily || {};
             state.historyWeeks = parsed.historyWeeks || {};
             if (parsed.timer) state.timer = Object.assign(state.timer, parsed.timer);
+            if (parsed.cloudConfig) state.cloudConfig = parsed.cloudConfig;
         }
     } catch (e) { console.warn(e); }
 
     function persist() {
-        try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { console.warn(e); }
+        try {
+            localStorage.setItem(STORE_KEY, JSON.stringify(state));
+            syncToCloud(); // 每次本地修改自动触发云端同步
+        } catch (e) { console.warn(e); }
+    }
+
+    // ================= 云端实时同步核心逻辑 =================
+    function saveCloudConfig() {
+        state.cloudConfig.binId = document.getElementById('sync-bin-id').value.trim();
+        state.cloudConfig.apiKey = document.getElementById('sync-api-key').value.trim();
+        persist();
+        alert("云端配置已保存！正在尝试连接并拉取云端数据...");
+        pullCloudData();
+    }
+
+    function syncToCloud() {
+        const { binId, apiKey } = state.cloudConfig;
+        if (!binId || !apiKey) return; // 未配置则不发起请求
+
+        fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': apiKey
+            },
+            body: JSON.stringify(state)
+        }).catch(err => console.warn("云端自动同步失败:", err));
+    }
+
+    function pullCloudData() {
+        const { binId, apiKey } = state.cloudConfig;
+        if (!binId || !apiKey) {
+            alert("请先填写并保存 Bin ID 和 API Key！");
+            return;
+        }
+
+        fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+            headers: {
+                'X-Master-Key': apiKey
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data && data.record) {
+                const cloudState = data.record;
+                if (cloudState.weeklySchema) state.weeklySchema = cloudState.weeklySchema;
+                if (cloudState.dailySchema) state.dailySchema = cloudState.dailySchema;
+                state.weekly = cloudState.weekly || {};
+                state.daily = cloudState.daily || {};
+                state.historyWeeks = cloudState.historyWeeks || {};
+                if (cloudState.timer) state.timer = cloudState.timer;
+                
+                localStorage.setItem(STORE_KEY, JSON.stringify(state));
+                updateGlobalSummary();
+                renderAdminTable();
+                alert("成功从云端同步最新数据！");
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("同步失败，请检查 Bin ID 或 API Key 是否正确。");
+        });
     }
 
     function switchTab(btn) {
@@ -428,7 +503,11 @@
         btn.classList.add('active');
         const target = btn.getAttribute('data-target');
         document.getElementById('view-' + target).classList.add('active');
-        if (target === 'admin') renderAdminTable();
+        if (target === 'admin') {
+            renderAdminTable();
+            document.getElementById('sync-bin-id').value = state.cloudConfig.binId || '';
+            document.getElementById('sync-api-key').value = state.cloudConfig.apiKey || '';
+        }
         if (target === 'history') renderHistoryBoard();
     }
 
@@ -583,7 +662,6 @@
         document.getElementById('sub-stat-weekly').innerText = `${weeklyRes.done} / ${weeklyRes.total} 项 (${weeklyPct}%)`;
     }
 
-    // ================= 历史周存档与可选顺延弹窗逻辑 =================
     function archiveCurrentWeek() {
         const wId = "W_" + formatDateLocal(new Date());
         state.historyWeeks[wId] = {
@@ -768,7 +846,6 @@
         if (confirm("⚠️ 确定要清空并恢复默认吗？")) { localStorage.removeItem(STORE_KEY); location.reload(); }
     }
 
-    // ================= 智能听写计时器修复逻辑 =================
     let timerHandle = null, status = "STOPPED", remaining = 0, overtimeSec = 0;
 
     function syncInputsFromState() {
