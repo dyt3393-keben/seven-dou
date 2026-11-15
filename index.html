@@ -141,7 +141,7 @@
         .admin-form-row { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
         .admin-input { padding: 10px 14px; border: 2px solid #d1d5db; border-radius: 10px; font-size: 15px; outline: none; flex: 1; min-width: 160px; }
 
-        /* 弹窗遮罩样式（用于勾选顺延项） */
+        /* 弹窗遮罩样式 */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.5); display: none; align-items: center; justify-content: center; z-index: 1000;
@@ -154,7 +154,6 @@
             display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f3f4f6; font-size: 16px; font-weight: 600;
         }
 
-        /* 历史复盘专属卡片微调 */
         .history-stat-box { background: #f8faf9; border-radius: 14px; padding: 16px; margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
 
         /* 计时器样式 */
@@ -360,7 +359,7 @@
 </div>
 
 <script>
-    const STORE_KEY = "xingban_study_v12";
+    const STORE_KEY = "xingban_study_v13";
     
     let defaultWeeklySchema = [
         { id: "w_cn", label: "📖 语文大统筹：大语文 / 现代文阅读 / 新概念", time: "60'" },
@@ -387,12 +386,12 @@
         ]},
         { subId: "en", subName: "🔤 英语", tasks: [
             { id: "en_1", label: "RAZ精读", time: "40'" },
-            { id: "en_2", label: "听力内化", time: "30'" },
+            { id: "en_2", label: "Basic 1000词", time: "30'" },
             { id: "en_3", label: "单词听写", time: "10'" },
             { id: "en_4", label: "错题跟进", time: "15'" },
             { id: "en_5", label: "作业订正", time: "10'" }
         ]},
-        { id: "sport", subName: "🏃 运动打卡", tasks: [
+        { subId: "sport", subName: "🏃 运动打卡", tasks: [
             { id: "sport_1", label: "跳绳锻炼", time: "15'" }
         ]}
     ];
@@ -649,7 +648,6 @@
         });
     }
 
-    // 弹出顺延复选框弹窗
     let currentRolloverWeekId = null;
     function openRolloverModal(wId) {
         currentRolloverWeekId = wId;
@@ -657,7 +655,6 @@
         const listContainer = document.getElementById('rollover-tasks-list');
         listContainer.innerHTML = '';
 
-        // 找出该周所有未完成的每日任务
         let uncompletedTasks = [];
         state.dailySchema.forEach(sub => {
             sub.tasks.forEach(t => {
@@ -702,7 +699,7 @@
         let count = 0;
         checkboxes.forEach(chk => {
             const taskId = chk.value;
-            state.daily[todayStr][taskId] = false; // 设为未完成加入今天
+            state.daily[todayStr][taskId] = false;
             count++;
         });
 
@@ -771,36 +768,140 @@
         if (confirm("⚠️ 确定要清空并恢复默认吗？")) { localStorage.removeItem(STORE_KEY); location.reload(); }
     }
 
+    // ================= 智能听写计时器修复逻辑 =================
     let timerHandle = null, status = "STOPPED", remaining = 0, overtimeSec = 0;
+
     function syncInputsFromState() {
-        document.getElementById('inp-count').value = state.timer.count;
-        document.getElementById('inp-sec').value = state.timer.sec;
-        document.getElementById('inp-buf').value = state.timer.buf;
+        const cInp = document.getElementById('inp-count');
+        const sInp = document.getElementById('inp-sec');
+        const bInp = document.getElementById('inp-buf');
+        if (cInp) cInp.value = state.timer.count;
+        if (sInp) sInp.value = state.timer.sec;
+        if (bInp) bInp.value = state.timer.buf;
     }
-    function calcTotalSeconds() { return (state.timer.count * state.timer.sec) + state.timer.buf; }
+
+    function calcTotalSeconds() {
+        return (parseInt(state.timer.count, 10) * parseInt(state.timer.sec, 10)) + parseInt(state.timer.buf, 10);
+    }
+
     function stepInput(field, delta) {
         if (status === "RUNNING" || status === "OVERTIME") return;
         state.timer[field] = Math.max(field === 'buf' ? 0 : 1, (parseInt(state.timer[field], 10) || 0) + delta);
         syncInputsFromState(); persist(); resetTimer();
     }
+
     function onManualInput() {
         if (status === "RUNNING" || status === "OVERTIME") return;
-        state.timer.count = Math.max(1, parseInt(document.getElementById('inp-count').value, 10) || 1);
-        state.timer.sec = Math.max(1, parseInt(document.getElementById('inp-sec').value, 10) || 1);
-        state.timer.buf = Math.max(0, parseInt(document.getElementById('inp-buf').value, 10) || 0);
+        const cInp = document.getElementById('inp-count');
+        const sInp = document.getElementById('inp-sec');
+        const bInp = document.getElementById('inp-buf');
+        if (cInp) state.timer.count = Math.max(1, parseInt(cInp.value, 10) || 1);
+        if (sInp) state.timer.sec = Math.max(1, parseInt(sInp.value, 10) || 1);
+        if (bInp) state.timer.buf = Math.max(0, parseInt(bInp.value, 10) || 0);
         persist(); resetTimer();
     }
+
     function updateClockDisplay() {
         const total = calcTotalSeconds();
-        document.getElementById('formula-text').innerText = `${state.timer.count} 个 × ${state.timer.sec} 秒 + ${state.timer.buf} 秒缓冲 = 共 ${total} 秒`;
-        const stage = document.getElementById('clock-stage'), statusEl = document.getElementById('clock-status'), startBtn = document.getElementById('btn-start'), digitsEl = document.getElementById('clock-digits');
+        const formulaEl = document.getElementById('formula-text');
+        if (formulaEl) {
+            formulaEl.innerText = `${state.timer.count} 个 × ${state.timer.sec} 秒 + ${state.timer.buf} 秒缓冲 = 共 ${total} 秒`;
+        }
+        const stage = document.getElementById('clock-stage');
+        const statusEl = document.getElementById('clock-status');
+        const startBtn = document.getElementById('btn-start');
+        const digitsEl = document.getElementById('clock-digits');
+        if (!stage) return;
+
         if (status === "STOPPED") {
-            stage.classList.remove('warning-mode', 'overtime-mode'); statusEl.innerText = "⏳ 准备就绪"; startBtn.innerText = "🚀 开始计时";
-            let m = Math.floor(total / 60), s = total % 60; digitsEl.innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            stage.classList.remove('warning-mode', 'overtime-mode');
+            if (statusEl) statusEl.innerText = "⏳ 准备就绪";
+            if (startBtn) startBtn.innerText = "🚀 开始计时";
+            let m = Math.floor(total / 60), s = total % 60;
+            if (digitsEl) digitsEl.innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        } else if (status === "PAUSED") {
+            let showSec = (remaining > 0) ? remaining : overtimeSec;
+            let m = Math.floor(showSec / 60), s = showSec % 60;
+            if (digitsEl) digitsEl.innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            if (statusEl) statusEl.innerText = "⏸️ 暂停中";
+            if (startBtn) startBtn.innerText = "▶️ 继续";
+        } else if (status === "RUNNING") {
+            let m = Math.floor(remaining / 60), s = remaining % 60;
+            if (digitsEl) digitsEl.innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            if (startBtn) startBtn.innerText = "⏳ 计时中...";
+            if (remaining <= 15) {
+                stage.classList.add('warning-mode');
+                if (statusEl) statusEl.innerText = "⚠️ 最后 15 秒！";
+            } else {
+                stage.classList.remove('warning-mode');
+                if (statusEl) statusEl.innerText = "🔥 正在报听写...";
+            }
+        } else if (status === "OVERTIME") {
+            stage.classList.remove('warning-mode');
+            stage.classList.add('overtime-mode');
+            let m = Math.floor(overtimeSec / 60), s = overtimeSec % 60;
+            if (digitsEl) digitsEl.innerText = `+${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            if (statusEl) statusEl.innerText = "🔴 已超时正计时";
+            if (startBtn) startBtn.innerText = "⏱️ 超时中...";
         }
     }
-    function resetTimer() { status = "STOPPED"; clearInterval(timerHandle); remaining = calcTotalSeconds(); overtimeSec = 0; updateClockDisplay(); }
 
+    function startTimer() {
+        if (status === "RUNNING" || status === "OVERTIME") return;
+        if (status === "STOPPED") {
+            onManualInput();
+            remaining = calcTotalSeconds();
+            overtimeSec = 0;
+        }
+        status = "RUNNING";
+        updateClockDisplay();
+        clearInterval(timerHandle);
+        timerHandle = setInterval(() => {
+            if (status === "RUNNING") {
+                if (remaining > 0) {
+                    remaining--;
+                    if (remaining === 15) speak("注意，还剩最后十五秒");
+                    updateClockDisplay();
+                } else {
+                    status = "OVERTIME";
+                    overtimeSec = 1;
+                    speak("听写时间到，开始超时统计");
+                    updateClockDisplay();
+                }
+            } else if (status === "OVERTIME") {
+                overtimeSec++;
+                updateClockDisplay();
+            }
+        }, 1000);
+    }
+
+    function pauseTimer() {
+        if (status === "RUNNING" || status === "OVERTIME") {
+            status = "PAUSED";
+            clearInterval(timerHandle);
+            updateClockDisplay();
+        }
+    }
+
+    function resetTimer() {
+        status = "STOPPED";
+        clearInterval(timerHandle);
+        remaining = calcTotalSeconds();
+        overtimeSec = 0;
+        updateClockDisplay();
+    }
+
+    function speak(msg) {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utter = new SpeechSynthesisUtterance(msg);
+            utter.lang = 'zh-CN';
+            utter.rate = 1.05;
+            window.speechSynthesis.speak(utter);
+        }
+    }
+
+    // 初始化执行
     syncInputsFromState();
     updateGlobalSummary();
     resetTimer();
